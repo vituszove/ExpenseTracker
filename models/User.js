@@ -20,10 +20,17 @@ const UserSchema = new mongoose.Schema({
     default: Date.now
   },
   income:{
-    type:Number
+    type:Number,
+    default:0
+  },
+  expense:{
+    type:Number,
+    default:0
+    
   },
   balance:{
-    type:Number
+    type:Number,
+    default:0
   }
 });
 

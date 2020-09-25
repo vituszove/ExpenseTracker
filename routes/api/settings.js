@@ -13,6 +13,7 @@ if (!errors.isEmpty()) {
 }
  try{
    const user = await User.findById(req.user.id).select('-password');
+   
    user.income = income;
    await user.save();
    res.json(user)
@@ -25,7 +26,9 @@ if (!errors.isEmpty()) {
 
 router.get('/balance',auth, async (req,res) => {
    try{
-      const transactions = await Transaction.find({'user':req.user.id})
+      const transactions = await Transaction.find({'user':req.user.id});
+      const user = await User.findById(req.user.id).select('-password');
+
       let userExpense = transactions.map(trans => 
          trans.amount
       )
@@ -33,10 +36,16 @@ router.get('/balance',auth, async (req,res) => {
          return total + currentVal;
      }, 0);
       
-     const user = await User.findById(req.user.id).select('-password');
-     user.balance = user.income - totalAmount;
-     res.json(user);
-     await user.save();
+  
+     let userObj = await user.toObject();
+     if(!userObj.hasOwnProperty('income')){
+        res.status(401).json({msg:'Please go settings page set your income'})
+     } else{
+      user.balance = user.income - totalAmount;
+      res.json(user);
+      await user.save();
+     }
+     
    }catch(err){
       console.error(err.message);
     res.status(500).send('Internal Server Error')
