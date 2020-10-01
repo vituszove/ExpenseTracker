@@ -9,7 +9,7 @@ const User = require("../../models/User");
 // @desc add a new transaction
 // @access private
 
-router.post('/',auth,[check('amount','Amount is required').not().isEmpty().isNumeric()], async (req,res) => {
+router.post('/',auth,[check('amount','Amount is required').not().isEmpty().isNumeric(),check('category','Category is required').not().isEmpty()], async (req,res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -19,7 +19,8 @@ router.post('/',auth,[check('amount','Amount is required').not().isEmpty().isNum
      
     const newTrans = new Transaction({
         amount:req.body.amount,
-        user:req.user.id
+        user:req.user.id,
+        category:req.body.category
     })
     const user = await User.findById(req.user.id).select('-password');
     if(req.body.amount.charAt(0) === '-'){

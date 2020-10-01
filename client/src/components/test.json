@@ -1,0 +1,9 @@
+{
+    "columns":[ {"title":"Name","field":"name"},
+        {"title":"Surname","field":"surname"}],
+       
+   "data":[
+       {"name":"haha","surname":"hehe","tableData":1},
+       {"name":"hoho","surname":"hihi","tableData":2}
+   ]
+}

@@ -4,6 +4,7 @@ const { check, validationResult } = require("express-validator");
 const auth = require('../../middleware/auth');
 const Transaction = require("../../models/Transaction");
 const User = require("../../models/User");
+const moment = require("moment");
 
 router.put('/income',auth,[check('income','Please Enter your income').not().isEmpty().isNumeric()], async (req,res) => {
 const {income} = req.body;
@@ -49,6 +50,30 @@ router.get('/balance',auth, async (req,res) => {
    }catch(err){
       console.error(err.message);
     res.status(500).send('Internal Server Error')
+   }
+})
+
+router.get('/history',auth, async (req,res) => {
+
+   try {
+      let week = 7;
+      let month = 31;
+      let year = 365;
+      let currentDate = new Date();
+      let day = currentDate.getDate();
+     let dateTimeFilter = day - week;
+      
+      let filter = {"date":'777',"user":req.user.id};
+      const transactions = await Transaction.find(filter);
+      
+      res.json(transactions)
+
+      
+     
+ 
+   } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Internal Server Error')
    }
 })
 module.exports = router;
